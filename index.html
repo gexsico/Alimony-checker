@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💔 Alimony Calculator 2.0</title>
+
+<style>
+:root {
+    --neon-pink:#ff007f;
+    --neon-blue:#00f2ff;
+    --glass: rgba(255,255,255,0.08);
+}
+
+body {
+    margin:0;
+    font-family: 'Segoe UI', sans-serif;
+    background: radial-gradient(circle at top, #0f0f0f, #000);
+    color:white;
+}
+
+/* GLASS CARD */
+.card {
+    background: var(--glass);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding:20px;
+    margin:20px;
+    box-shadow: 0 0 20px rgba(0,255,255,0.1);
+    transition:0.3s;
+}
+.card:hover {
+    transform: scale(1.02);
+}
+
+/* TITLE */
+h1 {
+    text-align:center;
+    color: var(--neon-pink);
+    text-shadow:0 0 15px var(--neon-pink);
+}
+
+/* INPUTS */
+input, select {
+    width:100%;
+    padding:10px;
+    margin:8px 0;
+    border-radius:10px;
+    border:none;
+}
+
+/* BUTTON */
+button {
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    margin:5px;
+    cursor:pointer;
+    background:linear-gradient(45deg,var(--neon-pink),var(--neon-blue));
+    color:white;
+    font-weight:bold;
+}
+
+button:hover {
+    box-shadow:0 0 15px var(--neon-blue);
+}
+
+/* RESULT */
+#result {
+    font-size:22px;
+    text-align:center;
+}
+
+/* METERS */
+.meter {
+    margin:10px 0;
+}
+.bar {
+    height:10px;
+    background: var(--neon-blue);
+    border-radius:10px;
+}
+
+/* FLOAT MUSIC PLAYER */
+.player {
+    position:fixed;
+    bottom:10px;
+    right:10px;
+    background:var(--glass);
+    padding:10px;
+    border-radius:10px;
+}
+
+/* SHAKE EFFECT */
+@keyframes shake {
+  0% { transform: translate(1px, 1px); }
+  50% { transform: translate(-2px, 0px); }
+  100% { transform: translate(1px, -1px); }
+}
+.shake {
+    animation: shake 0.5s infinite;
+}
+</style>
+</head>
+
+<body>
+
+<h1>💔 Alimony Calculator 2.0 – Cost of Love Gone Wrong 💸</h1>
+
+<div class="card">
+<h2>🧾 Enter Your Sad Story</h2>
+
+<input id="income" placeholder="Monthly Income 💰">
+<input id="partnerIncome" placeholder="Partner Income 💵">
+<input id="years" placeholder="Years of Marriage ⏳">
+<input id="fights" placeholder="Fights per Week 🤬">
+
+<select id="loveFirst">
+<option>You 😅</option>
+<option>Partner 😏</option>
+</select>
+
+<select id="cheat">
+<option>You</option>
+<option>Partner</option>
+<option>Both</option>
+<option>Nobody</option>
+</select>
+
+<select id="divorce">
+<option>You</option>
+<option>Partner</option>
+<option>Mutual</option>
+</select>
+
+<select id="lifestyle">
+<option>Normal</option>
+<option>Rich</option>
+<option>Influencer</option>
+<option>Ambani Level</option>
+</select>
+
+<select id="shopping">
+<option>Low</option>
+<option>Medium</option>
+<option>High</option>
+<option>Dangerous 😈</option>
+</select>
+
+<select id="inlaw">
+<option>None</option>
+<option>Moderate</option>
+<option>Daily Soap Level 📺</option>
+</select>
+
+<button onclick="calculate()">💀 Calculate My Damage</button>
+
+</div>
+
+<div class="card">
+<h2>📊 Result</h2>
+<div id="result">Waiting for your downfall...</div>
+
+<div class="meter">Life Ruined 😵
+<div class="bar" id="lifeBar"></div></div>
+
+<div class="meter">Toxic Level ☠️
+<div class="bar" id="toxicBar"></div></div>
+
+<div class="meter">Gold Digger 💰
+<div class="bar" id="goldBar"></div></div>
+
+<div class="meter">Happiness 😌
+<div class="bar" id="happyBar"></div></div>
+
+</div>
+
+<div class="card">
+<h2>🤣 Extra Buttons</h2>
+
+<button onclick="blame()">Blame Someone 😏</button>
+<button onclick="escape()">Escape Plan 🏃</button>
+<button onclick="roast()">AI Roast Me 🔥</button>
+<button onclick="lawyer()">📞 Lawyer Calling…</button>
+
+<div id="funOutput"></div>
+</div>
+
+<!-- MUSIC PLAYER -->
+<div class="player">
+🎵 <span id="track">No track</span><br>
+<button onclick="toggleMusic()">Play/Pause</button>
+<button onclick="mute()">Mute</button>
+</div>
+
+<!-- AUDIO -->
+<audio id="bgMusic" src="music/bg.mp3" loop></audio>
+<audio id="boom" src="music/boom.mp3"></audio>
+<audio id="sad" src="music/sad.mp3"></audio>
+<audio id="happy" src="music/happy.mp3"></audio>
+
+<script>
+let musicPlaying = false;
+let muted = false;
+
+function toggleMusic(){
+    let bg = document.getElementById("bgMusic");
+    if(musicPlaying){
+        bg.pause();
+    } else {
+        bg.volume = 0.2;
+        bg.play();
+    }
+    musicPlaying = !musicPlaying;
+}
+
+function mute(){
+    muted = !muted;
+    document.querySelectorAll("audio").forEach(a => a.muted = muted);
+}
+
+function calculate(){
+    let income = +document.getElementById("income").value || 0;
+    let fights = +document.getElementById("fights").value || 0;
+    let years = +document.getElementById("years").value || 0;
+    let cheat = document.getElementById("cheat").value;
+    let lifestyle = document.getElementById("lifestyle").value;
+
+    let amount = income * 0.3;
+
+    if(cheat==="You") amount *=1.4;
+    if(cheat==="Partner") amount *=0.8;
+    if(cheat==="Both") amount = Math.random()*income;
+
+    if(fights>5) amount *=1.25;
+    if(years>5) amount *=1.15;
+
+    if(lifestyle==="Rich") amount *=1.5;
+    if(lifestyle==="Influencer") amount *=2;
+    if(lifestyle==="Ambani Level") amount *=3;
+
+    amount += Math.random()*5000;
+
+    document.getElementById("boom").play();
+
+    let msg="";
+    if(amount>50000){
+        msg="🪦 RIP your bank balance.";
+        document.body.classList.add("shake");
+        document.getElementById("sad").play();
+    } else if(amount<10000){
+        msg="😂 You got lucky bro!";
+        document.getElementById("happy").play();
+    } else {
+        msg="💀 Start saving now.";
+    }
+
+    document.getElementById("result").innerHTML = msg+"<br>₹"+Math.round(amount)+"/month";
+
+    // METERS
+    document.getElementById("lifeBar").style.width = Math.min(amount/1000,100)+"%";
+    document.getElementById("toxicBar").style.width = (fights*10)+"%";
+    document.getElementById("goldBar").style.width = Math.random()*100+"%";
+    document.getElementById("happyBar").style.width = (100 - amount/1000)+"%";
+}
+
+/* FUN BUTTONS */
+
+function blame(){
+    let arr=[
+        "It's your fault bro 😏",
+        "Partner was villain 😂",
+        "Society did this 😤"
+    ];
+    funOutput.innerText = arr[Math.floor(Math.random()*arr.length)];
+}
+
+function escape(){
+    let arr=[
+        "Go Himalayas 🏔️",
+        "Join monastery 🧘",
+        "Disappear 😎"
+    ];
+    funOutput.innerText = arr[Math.floor(Math.random()*arr.length)];
+}
+
+function roast(){
+    let arr=[
+        "Bro even calculator feels bad for you 💀",
+        "You lost love AND money 😂",
+        "Legend in bad decisions 👏"
+    ];
+    funOutput.innerText = arr[Math.floor(Math.random()*arr.length)];
+}
+
+function lawyer(){
+    alert("Consultation fee ₹5000 😂");
+}
+</script>
+
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💔 Alimony Calculator 2.0</title>
+
+<style>
+:root {
+    --neon-pink:#ff007f;
+    --neon-blue:#00f2ff;
+    --glass: rgba(255,255,255,0.08);
+}
+
+body {
+    margin:0;
+    font-family: 'Segoe UI', sans-serif;
+    background: radial-gradient(circle at top, #0f0f0f, #000);
+    color:white;
+}
+
+/* GLASS CARD */
+.card {
+    background: var(--glass);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding:20px;
+    margin:20px;
+    box-shadow: 0 0 20px rgba(0,255,255,0.1);
+    transition:0.3s;
+}
+.card:hover {
+    transform: scale(1.02);
+}
+
+/* TITLE */
+h1 {
+    text-align:center;
+    color: var(--neon-pink);
+    text-shadow:0 0 15px var(--neon-pink);
+}
+
+/* INPUTS */
+input, select {
+    width:100%;
+    padding:10px;
+    margin:8px 0;
+    border-radius:10px;
+    border:none;
+}
+
+/* BUTTON */
+button {
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    margin:5px;
+    cursor:pointer;
+    background:linear-gradient(45deg,var(--neon-pink),var(--neon-blue));
+    color:white;
+    font-weight:bold;
+}
+
+button:hover {
+    box-shadow:0 0 15px var(--neon-blue);
+}
+
+/* RESULT */
+#result {
+    font-size:22px;
+    text-align:center;
+}
+
+/* METERS */
+.meter {
+    margin:10px 0;
+}
+.bar {
+    height:10px;
+    background: var(--neon-blue);
+    border-radius:10px;
+}
+
+/* FLOAT MUSIC PLAYER */
+.player {
+    position:fixed;
+    bottom:10px;
+    right:10px;
+    background:var(--glass);
+    padding:10px;
+    border-radius:10px;
+}
+
+/* SHAKE EFFECT */
+@keyframes shake {
+  0% { transform: translate(1px, 1px); }
+  50% { transform: translate(-2px, 0px); }
+  100% { transform: translate(1px, -1px); }
+}
+.shake {
+    animation: shake 0.5s infinite;
+}
+</style>
+</head>
+
+<body>
+
+<h1>💔 Alimony Calculator 2.0 – Cost of Love Gone Wrong 💸</h1>
+
+<div class="card">
+<h2>🧾 Enter Your Sad Story</h2>
+
+<input id="income" placeholder="Monthly Income 💰">
+<input id="partnerIncome" placeholder="Partner Income 💵">
+<input id="years" placeholder="Years of Marriage ⏳">
+<input id="fights" placeholder="Fights per Week 🤬">
+
+<select id="loveFirst">
+<option>You 😅</option>
+<option>Partner 😏</option>
+</select>
+
+<select id="cheat">
+<option>You</option>
+<option>Partner</option>
+<option>Both</option>
+<option>Nobody</option>
+</select>
+
+<select id="divorce">
+<option>You</option>
+<option>Partner</option>
+<option>Mutual</option>
+</select>
+
+<select id="lifestyle">
+<option>Normal</option>
+<option>Rich</option>
+<option>Influencer</option>
+<option>Ambani Level</option>
+</select>
+
+<select id="shopping">
+<option>Low</option>
+<option>Medium</option>
+<option>High</option>
+<option>Dangerous 😈</option>
+</select>
+
+<select id="inlaw">
+<option>None</option>
+<option>Moderate</option>
+<option>Daily Soap Level 📺</option>
+</select>
+
+<button onclick="calculate()">💀 Calculate My Damage</button>
+
+</div>
+
+<div class="card">
+<h2>📊 Result</h2>
+<div id="result">Waiting for your downfall...</div>
+
+<div class="meter">Life Ruined 😵
+<div class="bar" id="lifeBar"></div></div>
+
+<div class="meter">Toxic Level ☠️
+<div class="bar" id="toxicBar"></div></div>
+
+<div class="meter">Gold Digger 💰
+<div class="bar" id="goldBar"></div></div>
+
+<div class="meter">Happiness 😌
+<div class="bar" id="happyBar"></div></div>
+
+</div>
+
+<div class="card">
+<h2>🤣 Extra Buttons</h2>
+
+<button onclick="blame()">Blame Someone 😏</button>
+<button onclick="escape()">Escape Plan 🏃</button>
+<button onclick="roast()">AI Roast Me 🔥</button>
+<button onclick="lawyer()">📞 Lawyer Calling…</button>
+
+<div id="funOutput"></div>
+</div>
+
+<!-- MUSIC PLAYER -->
+<div class="player">
+🎵 <span id="track">No track</span><br>
+<button onclick="toggleMusic()">Play/Pause</button>
+<button onclick="mute()">Mute</button>
+</div>
+
+<!-- AUDIO -->
+<audio id="bgMusic" src="music/bg.mp3" loop></audio>
+<audio id="boom" src="music/boom.mp3"></audio>
+<audio id="sad" src="music/sad.mp3"></audio>
+<audio id="happy" src="music/happy.mp3"></audio>
+
+<script>
+let musicPlaying = false;
+let muted = false;
+
+function toggleMusic(){
+    let bg = document.getElementById("bgMusic");
+    if(musicPlaying){
+        bg.pause();
+    } else {
+        bg.volume = 0.2;
+        bg.play();
+    }
+    musicPlaying = !musicPlaying;
+}
+
+function mute(){
+    muted = !muted;
+    document.querySelectorAll("audio").forEach(a => a.muted = muted);
+}
+
+function calculate(){
+    let income = +document.getElementById("income").value || 0;
+    let fights = +document.getElementById("fights").value || 0;
+    let years = +document.getElementById("years").value || 0;
+    let cheat = document.getElementById("cheat").value;
+    let lifestyle = document.getElementById("lifestyle").value;
+
+    let amount = income * 0.3;
+
+    if(cheat==="You") amount *=1.4;
+    if(cheat==="Partner") amount *=0.8;
+    if(cheat==="Both") amount = Math.random()*income;
+
+    if(fights>5) amount *=1.25;
+    if(years>5) amount *=1.15;
+
+    if(lifestyle==="Rich") amount *=1.5;
+    if(lifestyle==="Influencer") amount *=2;
+    if(lifestyle==="Ambani Level") amount *=3;
+
+    amount += Math.random()*5000;
+
+    document.getElementById("boom").play();
+
+    let msg="";
+    if(amount>50000){
+        msg="🪦 RIP your bank balance.";
+        document.body.classList.add("shake");
+        document.getElementById("sad").play();
+    } else if(amount<10000){
+        msg="😂 You got lucky bro!";
+        document.getElementById("happy").play();
+    } else {
+        msg="💀 Start saving now.";
+    }
+
+    document.getElementById("result").innerHTML = msg+"<br>₹"+Math.round(amount)+"/month";
+
+    // METERS
+    document.getElementById("lifeBar").style.width = Math.min(amount/1000,100)+"%";
+    document.getElementById("toxicBar").style.width = (fights*10)+"%";
+    document.getElementById("goldBar").style.width = Math.random()*100+"%";
+    document.getElementById("happyBar").style.width = (100 - amount/1000)+"%";
+}
+
+/* FUN BUTTONS */
+
+function blame(){
+    let arr=[
+        "It's your fault bro 😏",
+        "Partner was villain 😂",
+        "Society did this 😤"
+    ];
+    funOutput.innerText = arr[Math.floor(Math.random()*arr.length)];
+}
+
+function escape(){
+    let arr=[
+        "Go Himalayas 🏔️",
+        "Join monastery 🧘",
+        "Disappear 😎"
+    ];
+    funOutput.innerText = arr[Math.floor(Math.random()*arr.length)];
+}
+
+function roast(){
+    let arr=[
+        "Bro even calculator feels bad for you 💀",
+        "You lost love AND money 😂",
+        "Legend in bad decisions 👏"
+    ];
+    funOutput.innerText = arr[Math.floor(Math.random()*arr.length)];
+}
+
+function lawyer(){
+    alert("Consultation fee ₹5000 😂");
+}
+</script>
+
+</body>
+</html>
